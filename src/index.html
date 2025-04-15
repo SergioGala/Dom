@@ -1,35 +1,1420 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="./assets/img/4geeks.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hello Rigo with Vanilla.js</title>
-
-    <!-- Fontawesome is our recomended library for icons -->
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
-      integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
-      crossorigin="anonymous"
-    />
-  </head>
-  <body>
-    <!-- Write your HTML code here, you can delete everything withing the body tags -->
-    <div class="container-fluid text-center">
-      <h1 class="mt-5">Hello Rigo!</h1>
-      <img src="./assets/img/rigo-baby.jpg" />
-      <p class="alert alert-warning mt-4">
-        If this text is <b>not</b> centered and <b>yellow</b>, you probably have
-        an error
-      </p>
-      <div class="fixed-bottom p-4">
-        Made with ❤️ by
-        <a href="https://www.4geeksacademy.com">4Geeks Academy</a>
-      </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Visual: Manipulación del DOM con JavaScript</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #e74c3c;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+        
+        h1, h2, h3 {
+            color: var(--dark-color);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .section {
+            background-color: white;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        pre {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            overflow-x: auto;
+            font-size: 14px;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
+        }
+        
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            background-color: #f1f1f1;
+            color: #333;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        .example {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+            background-color: #f9f9f9;
+        }
+        
+        .example:hover {
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .example h3 {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .explanation {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin: 15px 0;
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .example-output {
+            background-color: white;
+            border: 1px dashed #ccc;
+            padding: 15px;
+            margin-top: 15px;
+            min-height: 40px;
+            border-radius: var(--border-radius);
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .toc {
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .toc h2 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+        
+        .toc ul {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+        
+        .toc li {
+            margin: 10px 0;
+            padding-left: 15px;
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .toc a {
+            color: var(--dark-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .toc a:hover {
+            color: var(--primary-color);
+        }
+        
+        .definition {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin: 15px 0;
+            border-left: 3px solid #ffc107;
+        }
+        
+        .tip {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin: 15px 0;
+            border-left: 3px solid var(--secondary-color);
+        }
+        
+        .warning {
+            background-color: #ffebee;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin: 15px 0;
+            border-left: 3px solid var(--accent-color);
+        }
+        
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            width: 250px;
+            font-size: 16px;
+        }
+        
+        .demo-area {
+            border: 2px dashed #ccc;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: var(--border-radius);
+            background-color: white;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .highlight {
+            background-color: #fffde7;
+            padding: 3px;
+            border-radius: 3px;
+        }
+        
+        .function-name {
+            color: #e91e63;
+            font-weight: bold;
+        }
+        
+        .property-name {
+            color: #9c27b0;
+            font-weight: bold;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-number {
+            background-color: var(--primary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manipulación del DOM con JavaScript</h1>
+    
+    <div class="toc">
+        <h2>Contenido</h2>
+        <ul>
+            <li><a href="#intro">¿Qué es el DOM?</a></li>
+            <li><a href="#seleccion">Selección de Elementos</a></li>
+            <li><a href="#manipulacion">Manipulación de Contenido</a></li>
+            <li><a href="#estilos">Manipulación de Estilos</a></li>
+            <li><a href="#eventos">Eventos: Haciendo Páginas Interactivas</a></li>
+            <li><a href="#creacion">Creación y Eliminación de Elementos</a></li>
+        </ul>
     </div>
+    
+    <div id="intro" class="section">
+        <div class="section-header">
+            <div class="section-number">1</div>
+            <h2>¿Qué es el DOM?</h2>
+        </div>
+        
+        <div class="definition">
+            <p><strong>DOM</strong> = <strong>D</strong>ocument <strong>O</strong>bject <strong>M</strong>odel</p>
+            <p>Es una representación en memoria de tu página HTML. Convierte cada elemento HTML en un objeto que JavaScript puede manipular.</p>
+        </div>
+        
+        <div class="explanation">
+            <p>Imagina que tu página HTML es como un árbol familiar:</p>
+            <ul>
+                <li>El <code>document</code> es la raíz (abuelo)</li>
+                <li>Los elementos como <code>&lt;html&gt;</code>, <code>&lt;body&gt;</code> son las ramas (padres)</li>
+                <li>Los elementos dentro de ellos como <code>&lt;p&gt;</code>, <code>&lt;div&gt;</code> son las hojas (hijos)</li>
+            </ul>
+        </div>
+        
+        <div class="example">
+            <h3>Del HTML al DOM</h3>
+            
+            <div class="comparison">
+                <div>
+                    <h4>Código HTML:</h4>
+                    <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Mi Página&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1 id="titulo"&gt;Hola&lt;/h1&gt;
+    &lt;p&gt;Este es un párrafo&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                </div>
+                <div>
+                    <h4>Estructura del DOM:</h4>
+                    <img src="/api/placeholder/400/300" alt="Estructura del DOM" />
+                </div>
+            </div>
+            
+            <div class="tip">
+                <p><strong>¿Por qué es importante?</strong> El DOM permite a JavaScript:</p>
+                <ul>
+                    <li>Cambiar el texto y contenido de la página</li>
+                    <li>Modificar estilos y clases CSS</li>
+                    <li>Reaccionar a eventos (clics, teclas presionadas, etc.)</li>
+                    <li>Crear nuevos elementos o eliminar existentes</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div id="seleccion" class="section">
+        <div class="section-header">
+            <div class="section-number">2</div>
+            <h2>Selección de Elementos</h2>
+        </div>
+        
+        <div class="definition">
+            <p>Antes de modificar cualquier elemento, primero debemos <strong>seleccionarlo</strong>. Esto es como decirle a JavaScript: "Quiero trabajar con <em>este</em> elemento específico".</p>
+        </div>
+        
+        <div class="example">
+            <h3>Selección por ID</h3>
+            
+            <div class="explanation">
+                <p>El método <span class="function-name">getElementById()</span> selecciona UN elemento que tenga el ID especificado.</p>
+                <p>Recuerda que los IDs deben ser <strong>únicos</strong> en tu página (no puede haber dos elementos con el mismo ID).</p>
+            </div>
+            
+            <div class="comparison">
+                <div>
+                    <h4>HTML:</h4>
+                    <pre><code>&lt;div id="miCaja"&gt;
+    Soy una caja con ID "miCaja"
+&lt;/div&gt;</code></pre>
+                </div>
+                <div>
+                    <h4>JavaScript:</h4>
+                    <pre><code>// Seleccionamos el elemento con ID "miCaja"
+const miElemento = document.getElementById('miCaja');</code></pre>
+                </div>
+            </div>
+            
+            <div class="demo-area">
+                <div id="cajaDemostracion" style="padding: 10px; border: 2px solid #3498db;">
+                    Esta caja tiene ID "cajaDemostracion"
+                </div>
+                <button onclick="
+                    const miCaja = document.getElementById('cajaDemostracion');
+                    document.getElementById('resultadoID').textContent = 
+                        'Elemento seleccionado: ' + miCaja.textContent;
+                ">Seleccionar por ID</button>
+                <div class="example-output" id="resultadoID"></div>
+            </div>
+        </div>
+        
+        <div class="example">
+            <h3>Selección por Selector CSS (querySelector)</h3>
+            
+            <div class="explanation">
+                <p>El método <span class="function-name">querySelector()</span> es muy poderoso porque usa la misma sintaxis que CSS para seleccionar elementos.</p>
+                <p>Este método selecciona el <strong>primer elemento</strong> que coincida con el selector.</p>
+            </div>
+            
+            <div class="tip">
+                <p><strong>Recordatorio de selectores CSS:</strong></p>
+                <ul>
+                    <li><code>#id</code> - Selecciona por ID (ej. <code>#miCaja</code>)</li>
+                    <li><code>.clase</code> - Selecciona por clase (ej. <code>.miClase</code>)</li>
+                    <li><code>etiqueta</code> - Selecciona por tipo de etiqueta (ej. <code>p</code>, <code>div</code>)</li>
+                </ul>
+            </div>
+            
+            <div class="comparison">
+                <div>
+                    <h4>HTML:</h4>
+                    <pre><code>&lt;p class="destacado"&gt;Párrafo 1&lt;/p&gt;
+&lt;p class="destacado"&gt;Párrafo 2&lt;/p&gt;
+&lt;p&gt;Párrafo normal&lt;/p&gt;</code></pre>
+                </div>
+                <div>
+                    <h4>JavaScript:</h4>
+                    <pre><code>// Selecciona el primer párrafo con clase "destacado"
+const parrafo = document.querySelector('.destacado');</code></pre>
+                </div>
+            </div>
+            
+            <div class="demo-area">
+                <p class="texto-demo destacado">Este es el primer párrafo destacado</p>
+                <p class="texto-demo destacado">Este es el segundo párrafo destacado</p>
+                <p class="texto-demo">Este es un párrafo normal</p>
+                
+                <button onclick="
+                    const parrafoDestacado = document.querySelector('.texto-demo.destacado');
+                    document.getElementById('resultadoQuery').textContent = 
+                        'Primer elemento seleccionado: ' + parrafoDestacado.textContent;
+                ">Seleccionar primer .destacado</button>
+                <div class="example-output" id="resultadoQuery"></div>
+            </div>
+        </div>
+        
+        <div class="example">
+            <h3>Selección múltiple (querySelectorAll)</h3>
+            
+            <div class="explanation">
+                <p>El método <span class="function-name">querySelectorAll()</span> selecciona <strong>todos</strong> los elementos que coincidan con el selector.</p>
+                <p>Devuelve una lista de elementos que podemos recorrer uno por uno.</p>
+            </div>
+            
+            <div class="comparison">
+                <div>
+                    <h4>HTML:</h4>
+                    <pre><code>&lt;p class="destacado"&gt;Párrafo 1&lt;/p&gt;
+&lt;p class="destacado"&gt;Párrafo 2&lt;/p&gt;
+&lt;p&gt;Párrafo normal&lt;/p&gt;</code></pre>
+                </div>
+                <div>
+                    <h4>JavaScript:</h4>
+                    <pre><code>// Selecciona TODOS los párrafos con clase "destacado"
+const parrafos = document.querySelectorAll('.destacado');
 
-    <!-- Do not delete this script tag, this is what connects your HTML with the Javascript code -->
-    <script type="module" src="/app.js"></script>
-  </body>
-</html>
+// Podemos recorrerlos con un bucle
+parrafos.forEach(parrafo => {
+    console.log(parrafo.textContent);
+});</code></pre>
+                </div>
+            </div>
+            
+            <div class="demo-area">
+                <button onclick="
+                    const todosDestacados = document.querySelectorAll('.texto-demo.destacado');
+                    let resultado = 'Elementos seleccionados: ' + todosDestacados.length + '<br>';
+                    
+                    todosDestacados.forEach((elemento, indice) => {
+                        resultado += `Elemento ${indice + 1}: ${elemento.textContent}<br>`;
+                    });
+                    
+                    document.getElementById('resultadoQueryAll').innerHTML = resultado;
+                ">Seleccionar todos .destacado</button>
+                <div class="example-output" id="resultadoQueryAll"></div>
+            </div>
+            
+            <div class="warning">
+                <p><strong>Importante:</strong> <code>querySelectorAll()</code> devuelve algo similar a un array, pero no es exactamente un array. Es una "NodeList" que tiene el método <code>forEach</code> pero puede no tener otros métodos de arrays.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="manipulacion" class="section">
+        <div class="section-header">
+            <div class="section-number">3</div>
+            <h2>Manipulación de Contenido</h2>
+        </div>
+        
+        <div class="definition">
+            <p>Una vez seleccionado un elemento, podemos cambiar su contenido de diferentes maneras.</p>
+        </div>
+        
+        <div class="example">
+            <h3>Cambiar texto con textContent</h3>
+            
+            <div class="explanation">
+                <p>La propiedad <span class="property-name">textContent</span> permite cambiar (o leer) el contenido de texto de un elemento.</p>
+                <p>Es como borrar todo lo que hay dentro del elemento y escribir nuevo texto plano.</p>
+            </div>
+            
+            <div class="comparison">
+                <div>
+                    <h4>HTML inicial:</h4>
+                    <pre><code>&lt;p id="mensaje"&gt;Texto original&lt;/p&gt;</code></pre>
+                </div>
+                <div>
+                    <h4>JavaScript:</h4>
+                    <pre><code>// Seleccionamos el elemento
+const mensaje = document.getElementById('mensaje');
+
+// Cambiamos su contenido de texto
+mensaje.textContent = '¡Nuevo texto!';</code></pre>
+                </div>
+            </div>
+            
+            <div class="demo-area">
+                <p id="mensajeDemo">Este es el texto original</p>
+                <button onclick="
+                    document.getElementById('mensajeDemo').textContent = '¡He cambiado el texto con JavaScript!';
+                ">Cambiar texto</button>
+                <button onclick="
+                    document.getElementById('mensajeDemo').textContent = 'Este es el texto original';
+                ">Restablecer</button>
+            </div>
+            
+            <div class="tip">
+                <p><strong>¿Cuándo usar textContent?</strong> Cuando quieras establecer <em>solo texto</em> sin ningún formato HTML. Es más seguro y rápido que innerHTML.</p>
+            </div>
+        </div>
+        
+        <div class="example">
+            <h3>Cambiar HTML con innerHTML</h3>
+            
+            <div class="explanation">
+                <p>La propiedad <span class="property-name">innerHTML</span> permite cambiar el contenido HTML completo de un elemento.</p>
+                <p>Con innerHTML puedes incluir etiquetas HTML que serán interpretadas por el navegador.</p>
+            </div>
+            
+            <div class="comparison">
+                <div>
+                    <h4>HTML inicial:</h4>
+                    <pre><code>&lt;div id="contenedor"&gt;Texto normal&lt;/div&gt;</code></pre>
+                </div>
+                <div>
+                    <h4>JavaScript:</h4>
+                    <pre><code>// Seleccionamos el elemento
+const contenedor = document.getElementById('contenedor');
+
+// Cambiamos su contenido HTML
+contenedor.innerHTML = '&lt;strong&gt;Texto en negrita&lt;/strong&gt; y &lt;em&gt;cursiva&lt;/em&gt;';</code></pre>
+                </div>
+            </div>
+            
+            <div class="demo-area">
+                <div id="contenedorDemo">Este es contenido normal</div>
+                <button onclick="
+                    document.getElementById('contenedorDemo').innerHTML = '<strong>Texto en negrita</strong> y <em>texto en cursiva</em> usando HTML';
+                ">Añadir HTML</button>
+                <button onclick="
+                    document.getElementById('contenedorDemo').innerHTML = 'Este es contenido normal';
+                ">Restablecer</button>
+            </div>
+            
+            <div class="warning">
+                <p><strong>Precaución:</strong> innerHTML puede ser inseguro si introduces contenido proporcionado por usuarios sin filtrar, ya que podría permitir ataques de inyección de código.</p>
+            </div>
+        </div>
+        
+        <div class="example">
+            <h3>Modificar atributos</h3>
+            
+            <div class="explanation">
+                <p>Podemos cambiar cualquier atributo de un elemento HTML usando:</p>
+                <ul>
+                    <li><span class="function-name">getAttribute()</span> - Para obtener el valor de un atributo</li>
+                    <li><span class="function-name">setAttribute()</span> - Para establecer o cambiar un atributo</li>
+                </ul>
+            </div>
+            
+            <div class="comparison">
+                <div>
+                    <h4>HTML:</h4>
+                    <pre><code>&lt;img id="miImagen" 
+     src="imagen1.jpg" 
+     alt="Descripción original"&gt;</code></pre>
+                </div>
+                <div>
+                    <h4>JavaScript:</h4>
+                    <pre><code>// Seleccionamos la imagen
+const imagen = document.getElementById('miImagen');
+
+// Leemos un atributo
+const srcActual = imagen.getAttribute('src');
+console.log(srcActual); // "imagen1.jpg"
+
+// Cambiamos un atributo
+imagen.setAttribute('src', 'imagen2.jpg');
+imagen.setAttribute('alt', 'Nueva descripción');</code></pre>
+                </div>
+            </div>
+            
+            <div class="demo-area">
+                <a id="enlaceDemo" href="https://www.ejemplo.com" target="_blank">Enlace de ejemplo</a>
+                <div class="example-output" id="resultadoAtributo"></div>
+                <button onclick="
+                    const enlace = document.getElementById('enlaceDemo');
+                    const hrefActual = enlace.getAttribute('href');
+                    document.getElementById('resultadoAtributo').textContent = 
+                        'El enlace actual es: ' + hrefActual;
+                ">Ver atributo href</button>
+                <button onclick="
+                    const enlace = document.getElementById('enlaceDemo');
+                    enlace.setAttribute('href', 'https://developer.mozilla.org');
+                    enlace.textContent = 'MDN Web Docs';
+                    document.getElementById('resultadoAtributo').textContent = 
+                        'Enlace cambiado a MDN';
+                ">Cambiar enlace</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="estilos" class="section">
+        <div class="section-header">
+            <div class="section-number">4</div>
+            <h2>Manipulación de Estilos</h2>
+        </div>
+        
+        <div class="definition">
+            <p>JavaScript puede modificar el aspecto visual de los elementos cambiando sus estilos CSS directamente o manipulando sus clases.</p>
+        </div>
+        
+        <div class="example">
+            <h3>Cambiar estilos directamente</h3>
+            
+            <div class="explanation">
+                <p>La propiedad <span class="property-name">style</span> permite modificar los estilos CSS de un elemento directamente desde JavaScript.</p>
+                <p>Es como añadir estilos en línea (inline styles) al elemento.</p>
+            </div>
+            
+            <div class="comparison">
+                <div>
+                    <h4>HTML:</h4>
+                    <pre><code>&lt;div id="miCaja"&gt;
+    Una caja para cambiar estilos
+&lt;/div&gt;</code></pre>
+                </div>
+                <div>
+                    <h4>JavaScript:</h4>
+                    <pre><code>// Seleccionamos el elemento
+const caja = document.getElementById('miCaja');
+
+// Cambiamos varios estilos
+caja.style.backgroundColor = 'lightblue';
+caja.style.color = 'darkblue';
+caja.style.padding = '20px';
+caja.style.borderRadius = '10px';</code></pre>
+                </div>
+            </div>
+            
+            <div class="tip">
+                <p><strong>Importante:</strong> Las propiedades CSS que tienen guiones como <code>background-color</code> se escriben en camelCase en JavaScript: <code>backgroundColor</code>.</p>
+            </div>
+            
+            <div class="demo-area">
+                <div id="cajaEstilos">Esta caja cambiará de estilo</div>
+                <button onclick="
+                    const caja = document.getElementById('cajaEstilos');
+                    caja.style.backgroundColor = '#e74c3c';
+                    caja.style.color = 'white';
+                    caja.style.padding = '15px';
+                    caja.style.borderRadius = '8px';
+                    caja.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+                    caja.style.transition = 'all 0.3s ease';
+                ">Aplicar estilos</button>
+                <button onclick="
+                    const caja = document.getElementById('cajaEstilos');
+                    caja.style = '';
+                ">Restablecer</button>
+            </div>
+        </div>
+        
+        <div class="example">
+            <h3>Trabajar con clases CSS</h3>
+            
+            <div class="explanation">
+                <p>La propiedad <span class="property-name">classList</span> proporciona métodos para manipular las clases CSS de un elemento:</p>
+                <ul>
+                    <li><span class="function-name">classList.add('nombre-clase')</span> - Añade una clase</li>
+                    <li><span class="function-name">classList.remove('nombre-clase')</span> - Elimina una clase</li>
+                    <li><span class="function-name">classList.toggle('nombre-clase')</span> - Alterna una clase (la añade si no existe, la quita si existe)</li>
+                    <li><span class="function-name">classList.contains('nombre-clase')</span> - Comprueba si tiene una clase</li>
+                </ul>
+            </div>
+            
+            <div class="comparison">
+                <div>
+                    <h4>HTML y CSS:</h4>
+                    <pre><code>/* CSS */
+.destacado {
+    background-color: yellow;
+    font-weight: bold;
+    padding: 10px;
+}
+
+/* HTML */
+&lt;p id="parrafo"&gt;Este párrafo cambiará&lt;/p&gt;</code></pre>
+                </div>
+                <div>
+                    <h4>JavaScript:</h4>
+                    <pre><code>// Seleccionamos el elemento
+const parrafo = document.getElementById('parrafo');
+
+// Añadimos una clase
+parrafo.classList.add('destacado');
+
+// Comprobamos si tiene una clase
+if (parrafo.classList.contains('destacado')) {
+    console.log('Tiene la clase destacado');
+}
+
+// Alternamos una clase (la quita si existe)
+parrafo.classList.toggle('destacado');</code></pre>
+                </div>
+            </div>
+            
+            <style>
+                .destacado-demo {
+                    background-color: #ffe082;
+                    font-weight: bold;
+                    padding: 10px;
+                    border-left: 4px solid #ffa000;
+                    border-radius: 4px;
+                }
+                
+                .redondeado-demo {
+                    border-radius: 15px;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                }
+                
+                .grande-demo {
+                    font-size: 20px;
+                    padding: 15px;
+                }
+            </style>
+            
+            <div class="demo-area">
+                <p id="parrafoClases">Este párrafo cambiará sus clases CSS</p>
+                <div>
+                    <button onclick="document.getElementById('parrafoClases').classList.add('destacado-demo')">Añadir destacado</button>
+                    <button onclick="document.getElementById('parrafoClases').classList.remove('destacado-demo')">Quitar destacado</button>
+                </div>
+                <div>
+                    <button onclick="document.getElementById('parrafoClases').classList.toggle('redondeado-demo')">Alternar redondeado</button>
+                    <button onclick="document.getElementById('parrafoClases').classList.toggle('grande-demo')">Alternar tamaño</button>
+                </div>
+                <div>
+                    <button onclick="
+                        const tiene = document.getElementById('parrafoClases').classList.contains('destacado-demo');
+                        alert(tiene ? 'SÍ tiene la clase destacado-demo' : 'NO tiene la clase destacado-demo');
+                    ">Comprobar clase</button>
+                </div>
+                <button onclick="
+                    const parrafo = document.getElementById('parrafoClases');
+                    parrafo.classList.remove('destacado-demo');
+                    parrafo.classList.remove('redondeado-demo');
+                    parrafo.classList.remove('grande-demo');
+                ">Restablecer todo</button>
+            </div>
+            
+            <div class="tip">
+                <p><strong>Ventaja:</strong> Manipular clases es mejor que cambiar estilos directamente porque:</p>
+                <ul>
+                    <li>Mantiene la separación entre CSS (estilos) y JavaScript (comportamiento)</li>
+                    <li>Es más fácil de mantener y actualizar</li>
+                    <li>Permite aplicar múltiples estilos a la vez</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="example">
+            <h3>Aplicación práctica: Tema claro/oscuro</h3>
+            
+            <div class="explanation">
+                <p>Podemos combinar lo aprendido para crear funcionalidades comunes como un selector de tema.</p>
+            </div>
+            
+            <style>
+                .tema-oscuro {
+                    background-color: #333;
+                    color: #fff;
+                }
+                
+                .tema-oscuro button {
+                    background-color: #555;
+                    border: 1px solid #777;
+                }
+                
+                #demoTema {
+                    padding: 20px;
+                    border-radius: 8px;
+                    transition: all 0.3s ease;
+                }
+            </style>
+            
+            <div class="demo-area">
+                <div id="demoTema">
+                    <h4>Selector de tema</h4>
+                    <p>Este es un ejemplo de cómo cambiar el tema de un componente usando classList.</p>
+                    <button id="botonTema" onclick="
+                        const contenedor = document.getElementById('demoTema');
+                        contenedor.classList.toggle('tema-oscuro');
+                        
+                        const boton = document.getElementById('botonTema');
+                        if (contenedor.classList.contains('tema-oscuro')) {
+                            boton.textContent = 'Cambiar a tema claro';
+                        } else {
+                            boton.textContent = 'Cambiar a tema oscuro';
+                        }
+                    ">Cambiar a tema oscuro</button>
+                </div>
+            </div>
+            
+            <pre><code>// HTML
+&lt;div id="contenedor"&gt;
+    &lt;h4&gt;Selector de tema&lt;/h4&gt;
+    &lt;p&gt;Este es un contenido de ejemplo.&lt;/p&gt;
+    &lt;button id="botonTema"&gt;Cambiar a tema oscuro&lt;/button&gt;
+&lt;/div&gt;
+
+// CSS
+.tema-oscuro {
+    background-color: #333;
+    color: #fff;
+}
+
+// JavaScript
+const botonTema = document.getElementById('botonTema');
+const contenedor = document.getElementById('contenedor');
+
+botonTema.addEventListener('click', function() {
+    // Alterna la clase tema-oscuro
+    contenedor.classList.toggle('tema-oscuro');
+    
+    // Actualiza el texto del botón
+    if (contenedor.classList.contains('tema-oscuro')) {
+        botonTema.textContent = 'Cambiar a tema claro';
+    } else {
+        botonTema.textContent = 'Cambiar a tema oscuro';
+    }
+});</code></pre>
+        </div>
+    </div>
+    
+    <div id="eventos" class="section">
+        <div class="section-header">
+            <div class="section-number">5</div>
+            <h2>Eventos: Haciendo Páginas Interactivas</h2>
+        </div>
+        
+        <div class="definition">
+            <p>Los <strong>eventos</strong> son acciones que ocurren en la página web, como clics, movimientos del mouse, pulsaciones de teclas, etc. JavaScript puede "escuchar" estos eventos y ejecutar código cuando ocurran.</p>
+        </div>
+        
+        <div class="example">
+            <h3>Eventos de clic básicos</h3>
+            
+            <div class="explanation">
+                <p>El método <span class="function-name">addEventListener()</span> conecta un evento con una función que se ejecutará cuando ocurra ese evento.</p>
+                <p>Sintaxis: <code>elemento.addEventListener('tipoDeEvento', funcionAEjecutar);</code></p>
+            </div>
+            
+            <div class="comparison">
+                <div>
+                    <h4>HTML:</h4>
+                    <pre><code>&lt;button id="miBoton"&gt;Haz clic&lt;/button&gt;</code></pre>
+                </div>
+                <div>
+                    <h4>JavaScript:</h4>
+                    <pre><code>// Seleccionamos el botón
+const boton = document.getElementById('miBoton');
+
+// Añadimos un "escuchador" de eventos
+boton.addEventListener('click', function() {
+    alert('¡Hiciste clic en el botón!');
+});</code></pre>
+                </div>
+            </div>
+            
+            <div class="demo-area">
+                <button id="botonEvento1">Haz clic en mí</button>
+                <button id="botonEvento2">Otro botón</button>
+                <div class="example-output" id="salidaEvento"></div>
+                
+                <script>
+                    document.getElementById('botonEvento1').addEventListener('click', function() {
+                        document.getElementById('salidaEvento').textContent = 
+                            'Has hecho clic en el primer botón a las ' + new Date().toLocaleTimeString();
+                    });
+                    
+                    document.getElementById('botonEvento2').addEventListener('click', function() {
+                        document.getElementById('salidaEvento').textContent = 
+                            'Has hecho clic en el segundo botón a las ' + new Date().toLocaleTimeString();
+                    });
+                </script>
+            </div>
+            
+            <div class="tip">
+                <p>También puedes asignar funciones ya definidas:</p>
+                <pre><code>function mostrarMensaje() {
+    console.log('Botón presionado');
+}
+
+boton.addEventListener('click', mostrarMensaje);</code></pre>
+            </div>
+        </div>
+        
+        <div class="example">
+            <h3>Eventos con información del evento</h3>
+            
+            <div class="explanation">
+                <p>Cuando se ejecuta un manejador de eventos, recibe automáticamente un objeto <span class="property-name">event</span> con información sobre el evento.</p>
+                <p>Este objeto contiene propiedades útiles como:</p>
+                <ul>
+                    <li><code>event.target</code> - El elemento que desencadenó el evento</li>
+                    <li><code>event.type</code> - El tipo de evento (ej. "click")</li>
+                    <li><code>event.preventDefault()</code> - Método para prevenir el comportamiento predeterminado</li>
+                </ul>
+            </div>
+            
+            <div class="comparison">
+                <div>
+                    <h4>HTML:</h4>
+                    <pre><code>&lt;a href="https://ejemplo.com" id="miEnlace"&gt;
+    Enlace de ejemplo
+&lt;/a&gt;</code></pre>
+                </div>
+                <div>
+                    <h4>JavaScript:</h4>
+                    <pre><code>const enlace = document.getElementById('miEnlace');
+
+enlace.addEventListener('click', function(event) {
+    // Prevenir que el enlace abra la URL
+    event.preventDefault();
+    
+    // Mostrar un mensaje en su lugar
+    console.log('Clic en:', event.target.textContent);
+    console.log('Href:', event.target.href);
+});</code></pre>
+                </div>
+            </div>
+            
+            <div class="demo-area">
+                <a href="https://developer.mozilla.org" id="enlaceDemo2">Este enlace no te llevará a Mozilla</a>
+                <div class="example-output" id="salidaEnlace"></div>
+                
+                <script>
+                    document.getElementById('enlaceDemo2').addEventListener('click', function(event) {
+                        event.preventDefault();
+                        document.getElementById('salidaEnlace').innerHTML = 
+                            'Enlace detenido por preventDefault()<br>' +
+                            'Texto del enlace: ' + event.target.textContent + '<br>' +
+                            'URL del enlace: ' + event.target.href;
+                    });
+                </script>
+            </div>
+        </div>
+        
+        <div class="example">
+            <h3>Eventos del ratón</h3>
+            
+            <div class="explanation">
+                <p>Podemos detectar diferentes interacciones del ratón:</p>
+                <ul>
+                    <li><code>click</code> - Clic simple</li>
+                    <li><code>dblclick</code> - Doble clic</li>
+                    <li><code>mouseover</code> - Cuando el ratón entra en el elemento</li>
+                    <li><code>mouseout</code> - Cuando el ratón sale del elemento</li>
+                    <li><code>mousemove</code> - Cuando el ratón se mueve dentro del elemento</li>
+                </ul>
+            </div>
+            
+            <style>
+                #areaRaton {
+                    width: 100%;
+                    height: 100px;
+                    border: 2px solid #3498db;
+                    border-radius: 8px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    transition: background-color 0.3s;
+                }
+            </style>
+            
+            <div class="demo-area">
+                <div id="areaRaton">Interactúa conmigo</div>
+                <div class="example-output" id="salidaRaton"></div>
+                
+                <script>
+                    const area = document.getElementById('areaRaton');
+                    const salida = document.getElementById('salidaRaton');
+                    
+                    area.addEventListener('mouseover', function() {
+                        this.style.backgroundColor = '#3498db';
+                        this.style.color = 'white';
+                        salida.textContent = 'El ratón entró en el área';
+                    });
+                    
+                    area.addEventListener('mouseout', function() {
+                        this.style.backgroundColor = '';
+                        this.style.color = '';
+                        salida.textContent = 'El ratón salió del área';
+                    });
+                    
+                    area.addEventListener('click', function() {
+                        salida.textContent = 'Hiciste clic en el área';
+                    });
+                    
+                    area.addEventListener('dblclick', function() {
+                        salida.textContent = 'Hiciste doble clic en el área';
+                    });
+                </script>
+            </div>
+            
+            <pre><code>// HTML
+&lt;div id="area"&gt;Interactúa conmigo&lt;/div&gt;
+
+// JavaScript
+const area = document.getElementById('area');
+
+area.addEventListener('mouseover', function() {
+    this.style.backgroundColor = '#3498db';
+    this.style.color = 'white';
+    console.log('Ratón dentro');
+});
+
+area.addEventListener('mouseout', function() {
+    this.style.backgroundColor = '';
+    this.style.color = '';
+    console.log('Ratón fuera');
+});
+
+// Más eventos
+area.addEventListener('click', () => console.log('Clic'));
+area.addEventListener('dblclick', () => console.log('Doble clic'));</code></pre>
+        </div>
+        
+        <div class="example">
+            <h3>Eventos de teclado</h3>
+            
+            <div class="explanation">
+                <p>JavaScript puede detectar cuando el usuario presiona teclas:</p>
+                <ul>
+                    <li><code>keydown</code> - Cuando una tecla se presiona</li>
+                    <li><code>keyup</code> - Cuando una tecla se suelta</li>
+                    <li><code>keypress</code> - Cuando se presiona una tecla que produce un carácter (deprecated)</li>
+                </ul>
+            </div>
+            
+            <div class="demo-area">
+                <input type="text" id="campoTeclado" placeholder="Escribe aquí...">
+                <div class="example-output" id="salidaTeclado"></div>
+                
+                <script>
+                    const campo = document.getElementById('campoTeclado');
+                    const salidaTeclado = document.getElementById('salidaTeclado');
+                    
+                    campo.addEventListener('keydown', function(event) {
+                        salidaTeclado.innerHTML = 
+                            'Tecla presionada: ' + event.key + '<br>' +
+                            'Código: ' + event.code + '<br>' +
+                            'Texto actual: ' + this.value;
+                    });
+                </script>
+            </div>
+            
+            <pre><code>// HTML
+&lt;input type="text" id="miInput" placeholder="Escribe aquí..."&gt;
+
+// JavaScript
+const input = document.getElementById('miInput');
+
+// Detectar teclas presionadas
+input.addEventListener('keydown', function(event) {
+    console.log('Tecla presionada:', event.key);
+    console.log('Código de la tecla:', event.code);
+    
+    // Detectar teclas específicas
+    if (event.key === 'Enter') {
+        console.log('¡Presionaste Enter!');
+    }
+});</code></pre>
+        </div>
+        
+        <div class="example">
+            <h3>Eventos de formulario</h3>
+            
+            <div class="explanation">
+                <p>Los formularios tienen eventos especiales:</p>
+                <ul>
+                    <li><code>submit</code> - Cuando se envía un formulario</li>
+                    <li><code>reset</code> - Cuando se restablece un formulario</li>
+                    <li><code>change</code> - Cuando cambia el valor de un input (al perder el foco)</li>
+                    <li><code>input</code> - Cuando cambia el valor (en tiempo real)</li>
+                </ul>
+            </div>
+            
+            <div class="demo-area">
+                <form id="demoFormulario">
+                    <div>
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" id="nombre">
+                    </div>
+                    <div style="margin: 10px 0;">
+                        <button type="submit">Enviar</button>
+                        <button type="reset">Restablecer</button>
+                    </div>
+                </form>
+                <div class="example-output" id="salidaFormulario"></div>
+                
+                <script>
+                    const formulario = document.getElementById('demoFormulario');
+                    const campoNombre = document.getElementById('nombre');
+                    const salidaForm = document.getElementById('salidaFormulario');
+                    
+                    formulario.addEventListener('submit', function(event) {
+                        event.preventDefault();
+                        salidaForm.textContent = '¡Formulario enviado! Nombre: ' + campoNombre.value;
+                    });
+                    
+                    formulario.addEventListener('reset', function() {
+                        salidaForm.textContent = 'Formulario restablecido';
+                    });
+                    
+                    campoNombre.addEventListener('input', function() {
+                        salidaForm.textContent = 'Escribiendo: ' + this.value;
+                    });
+                </script>
+            </div>
+            
+            <pre><code>// HTML
+&lt;form id="miFormulario"&gt;
+    &lt;input type="text" id="nombre"&gt;
+    &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+
+// JavaScript
+const formulario = document.getElementById('miFormulario');
+const inputNombre = document.getElementById('nombre');
+
+// Evento al enviar el formulario
+formulario.addEventListener('submit', function(event) {
+    // Prevenir el envío normal del formulario
+    event.preventDefault();
+    
+    // Hacer algo con los datos
+    console.log('Formulario enviado con:', inputNombre.value);
+});
+
+// Evento en tiempo real mientras se escribe
+inputNombre.addEventListener('input', function() {
+    console.log('Valor actual:', this.value);
+});</code></pre>
+        </div>
+    </div>
+    
+    <div id="creacion" class="section">
+        <div class="section-header">
+            <div class="section-number">6</div>
+            <h2>Creación y Eliminación de Elementos</h2>
+        </div>
+        
+        <div class="definition">
+            <p>JavaScript no solo puede modificar elementos existentes, también puede crear elementos completamente nuevos o eliminar elementos del DOM.</p>
+        </div>
+        
+        <div class="example">
+            <h3>Crear elementos nuevos</h3>
+            
+            <div class="explanation">
+                <p>Para crear elementos seguimos tres pasos:</p>
+                <ol>
+                    <li>Crear el elemento con <span class="function-name">createElement()</span></li>
+                    <li>Configurar propiedades y contenido</li>
+                    <li>Añadir el elemento al DOM con <span class="function-name">appendChild()</span> u otros métodos</li>
+                </ol>
+            </div>
+            
+            <div class="comparison">
+                <div>
+                    <h4>HTML inicial:</h4>
+                    <pre><code>&lt;div id="contenedor"&gt;
+    &lt;!-- Aquí se añadirán elementos --&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+                <div>
+                    <h4>JavaScript:</h4>
+                    <pre><code>// Seleccionar contenedor
+const contenedor = document.getElementById('contenedor');
+
+// 1. Crear nuevo elemento
+const nuevoParrafo = document.createElement('p');
+
+// 2. Configurar contenido y propiedades
+nuevoParrafo.textContent = 'Este párrafo fue creado con JavaScript';
+nuevoParrafo.style.color = 'blue';
+nuevoParrafo.classList.add('destacado');
+
+// 3. Añadir al DOM
+contenedor.appendChild(nuevoParrafo);</code></pre>
+                </div>
+            </div>
+            
+            <div class="demo-area">
+                <div id="contenedorElementos"></div>
+                <button onclick="
+                    const contenedor = document.getElementById('contenedorElementos');
+                    
+                    // Crear nuevo elemento
+                    const nuevoParrafo = document.createElement('p');
+                    
+                    // Configurar contenido y propiedades
+                    nuevoParrafo.textContent = 'Párrafo creado a las ' + new Date().toLocaleTimeString();
+                    nuevoParrafo.style.padding = '10px';
+                    nuevoParrafo.style.backgroundColor = '#e3f2fd';
+                    nuevoParrafo.style.borderLeft = '4px solid #2196f3';
+                    nuevoParrafo.style.marginBottom = '10px';
+                    
+                    // Añadir al DOM
+                    contenedor.appendChild(nuevoParrafo);
+                ">Crear párrafo</button>
+                
+                <button onclick="
+                    const contenedor = document.getElementById('contenedorElementos');
+                    
+                    // Crear nuevo botón
+                    const nuevoBoton = document.createElement('button');
+                    
+                    // Configurar propiedades
+                    nuevoBoton.textContent = 'Soy un botón nuevo';
+                    nuevoBoton.style.backgroundColor = '#4caf50';
+                    nuevoBoton.style.margin = '5px';
+                    
+                    // Añadir evento
+                    nuevoBoton.addEventListener('click', function() {
+                        alert('¡Hiciste clic en el botón creado!');
+                    });
+                    
+                    // Añadir al DOM
+                    contenedor.appendChild(nuevoBoton);
+                ">Crear botón</button>
+            </div>
+        </div>
+        
+        <div class="example">
+            <h3>Creación de elementos complejos</h3>
+            
+            <div class="explanation">
+                <p>Podemos crear estructuras más complejas anidando elementos.</p>
+            </div>
+            
+            <div class="demo-area">
+                <div id="contenedorTarjeta"></div>
+                <button onclick="
+                    const contenedor = document.getElementById('contenedorTarjeta');
+                    
+                    // Crear tarjeta
+                    const tarjeta = document.createElement('div');
+                    tarjeta.style.border = '1px solid #ddd';
+                    tarjeta.style.borderRadius = '8px';
+                    tarjeta.style.padding = '15px';
+                    tarjeta.style.margin = '10px 0';
+                    tarjeta.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+                    
+                    // Crear título
+                    const titulo = document.createElement('h3');
+                    titulo.textContent = 'Tarjeta con JavaScript';
+                    titulo.style.color = '#2196f3';
+                    titulo.style.margin = '0 0 10px 0';
+                    
+                    // Crear contenido
+                    const contenido = document.createElement('p');
+                    contenido.textContent = 'Este es un ejemplo de creación de elementos anidados con JavaScript.';
+                    
+                    // Crear botón
+                    const boton = document.createElement('button');
+                    boton.textContent = 'Aceptar';
+                    boton.style.marginTop = '10px';
+                    
+                    // Añadir evento al botón
+                    boton.addEventListener('click', function() {
+                        tarjeta.style.backgroundColor = '#f8f9fa';
+                    });
+                    
+                    // Ensamblar estructura
+                    tarjeta.appendChild(titulo);
+                    tarjeta.appendChild(contenido);
+                    tarjeta.appendChild(boton);
+                    
+                    // Añadir al contenedor
+                    contenedor.appendChild(tarjeta);
+                ">Crear tarjeta</button>
+            </div>
+            
+            <pre><code>// Creación de una tarjeta completa con JavaScript
+function crearTarjeta(titulo, contenido) {
+    // Crear elementos principales
+    const tarjeta = document.createElement('div');
+    const encabezado = document.createElement('h3');
+    const texto = document.createElement('p');
+    const boton = document.createElement('button');
+    
+    // Configurar contenido
+    encabezado.textContent = titulo;
+    texto.textContent = contenido;
+    boton.textContent = 'Aceptar';
+    
+    // Configurar estilos
+    tarjeta.classList.add('tarjeta');
+    // Añadir más estilos...
+    
+    // Añadir evento al botón
+    boton.addEventListener('click', function() {
+        console.log('Tarjeta aceptada');
+    });
+    
+    // Ensamblar la estructura
+    tarjeta.appendChild(encabezado);
+    tarjeta.appendChild(texto);
+    tarjeta.appendChild(boton);
+    
+    // Devolver la tarjeta completa
+    return tarjeta;
+}
+
+// Uso
+const miTarjeta = crearTarjeta('Título de ejemplo', 'Contenido de la tarjeta');
+document.getElementById('contenedor').appendChild(miTarjeta);</code></pre>
+        </div>
+        
+        <div class="example">
+            <h3>Eliminar elementos</h3>
+            
+            <div class="explanation">
+                <p>Hay varias formas de eliminar elementos del DOM:</p>
+                <ul>
+                    <li><span class="function-name">elemento.remove()</span> - Elimina el elemento directamente</li>
+                    <li><span class="function-name">padre.removeChild(hijo)</span> - Elimina un hijo desde el padre</li>
+                </ul>
+            </div>
+            
+            <div class="demo-area">
+                <div id="contenedorElementosEliminar">
+                    <p class="itemEliminar">Elemento 1</p>
+                    <p class="itemEliminar">Elemento 2</p>
+                    <p class="itemEliminar">Elemento 3</p>
+                </div>
+                
+                <button onclick="
+                    const contenedor = document.getElementById('contenedorElementosEliminar');
+                    if (contenedor.children.length > 0) {
+                        // Forma 1: Usando remove()
+                        contenedor.children[0].remove();
+                    }
+                ">Eliminar primer elemento (remove)</button>
+                
+                <button onclick="
+                    const contenedor = document.getElementById('contenedorElementosEliminar');
+                    if (contenedor.children.length > 0) {
+                        // Forma 2: Usando removeChild()
+                        contenedor.removeChild(contenedor.lastElementChild);
+                    }
+                ">Eliminar último elemento (removeChild)</button>
+                
+                <button onclick="
+                    // Añadir más elementos
+                    const contenedor = document.getElementById('contenedorElementosEliminar');
+                    const nuevoElemento = document.createElement('p');
+                    nuevoElemento.textContent = 'Elemento ' + (contenedor.children.length + 1);
+                    nuevoElemento.className = 'itemEliminar';
+                    nuevoElemento.style.backgroundColor = '#e8f5e9';
+                    nuevoElemento.style.padding = '5px';
+                    contenedor.appendChild(nuevoElemento);
+                ">Añadir elemento</button>
+            </div>
+            
+            <pre><code>// Método 1: Eliminar un elemento directamente
+const elemento = document.getElementById('miElemento');
+elemento.remove();
+
+// Método 2: Eliminar un hijo desde el padre
+const padre = document.getElementById('contenedor');
+const hijo = document.getElementById('elementoAEliminar');
+padre.removeChild(hijo);
+
+// Método 3: Eliminar todos los hijos
+function eliminarTodosLosHijos(elemento) {
+    while (elemento.firstChild) {
+        elemento.removeChild(elemento.firstChild);
+    }
+}
+
+eliminarTodosLosHijos(document.getElementById('contenedor'));</code></pre>
+        </div>
+        
+        <div class="example">
+            <h3>Insertar elementos en posiciones específicas</h3>
+            
+            <div class="explanation">
+                <p>Además de <code>appendChild</code>, existen otros métodos para insertar elementos en diferentes posiciones:</p>
+                <ul>
+                    <li><span class="function-name">padre.appendChild(elemento)</span> - Añade al final</li>
+                    <li><span class="function-name">padre.insertBefore(nuevo, referencia)</span> - Inserta antes de otro elemento</li>
+                    <li><span class="function-name">elemento.insertAdjacentElement(posición, elemento)</span> - Inserta en una posición relativa</li>
+                </ul>
+            </div>
+            
+            <div class="demo-area">
+                <div id="contenedorPosiciones">
+                    <div style="background-color: #e3f2fd; padding: 10px; margin: 5px 0;">Elemento Existente</div>
+                </div>
+                
+                <button onclick="
+                    const contenedor = document.getElementById('contenedorPosiciones');
+                    const elementoExistente = contenedor.firstElementChild;
+                    
+                    const nuevoElemento = document.createElement('div');
+                    nuevoElemento.textContent = 'Añadido al final (appendChild)';
+                    nuevoElemento.style.backgroundColor = '#fff9c4';
+                    nuevoElemento.style.padding = '10px';
+                    nuevoElemento.style.margin = '5px 0';
+                    
+                    contenedor.appendChild(nuevoElemento);
+                ">Añadir al final</button>
+                
+                <button onclick="
+                    const contenedor = document.getElementById('contenedorPosiciones');
+                    const elementoExistente = contenedor.firstElementChild;
+                    
+                    const nuevoElemento = document.createElement('div');
+                    nuevoElemento.textContent = 'Añadido antes (insertBefore)';
+                    nuevoElemento.style.backgroundColor = '#ffccbc';
+                    nuevoElemento.style.padding = '10px';
+                    nuevoElemento.style.margin = '5px 0';
+                    
+                    contenedor.insertBefore(nuevoElemento, elementoExistente);
+                ">Añadir antes</button>
+                </div>
+              </script>
+              </body>
+              </html>
+    </html>
